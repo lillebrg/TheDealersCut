@@ -1,8 +1,6 @@
 using System;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 
 public class BlackjackManager : MonoBehaviour
@@ -43,6 +41,7 @@ public class BlackjackManager : MonoBehaviour
     //card hiding dealers 2nd card
     public GameObject hideCard;
 
+    private Boolean gameInProgress = false;
     private Boolean alreadyPayed = false;
     //how much bet is
 
@@ -65,7 +64,7 @@ public class BlackjackManager : MonoBehaviour
     private void GoBack()
     {
         Player.transform.localScale = new Vector3(1, 1, 1);
-        playerMotor.Teleport(new Vector3(-1.906f, 0.919f, 12.779f), Quaternion.Euler(0f, -90f, 0f));
+        playerMotor.Teleport(new Vector3(-15.573f, 0.087f, -14.457f), Quaternion.Euler(0f, -90f, 0f));
         blackjackTable.GoBack();
     }
 
@@ -81,6 +80,7 @@ public class BlackjackManager : MonoBehaviour
             mainText.gameObject.SetActive(true);
             return;
         }
+        gameInProgress = true;
         // Reset round, hide text, prep for new hand
         playerScript.ResetHand();
         dealerScript.ResetHand();
@@ -165,7 +165,8 @@ public class BlackjackManager : MonoBehaviour
         else if (playerBust || (!dealerBust && dealerScript.handValue > playerScript.handValue))
         {
             mainText.text = "Dealer wins!";
-            if(!alreadyPayed)
+            bodyBettingManager.betAmount = 0;
+            if (!alreadyPayed)
                 bodyBettingManager.LoseParts();
         }
         // if dealer busts, player didnt, or player has more points, player wins
@@ -188,6 +189,7 @@ public class BlackjackManager : MonoBehaviour
         // Set ui up for next move / hand / turn
         if (roundOver)
         {
+            gameInProgress = false;
             HitBtn.gameObject.SetActive(false);
             StandBtn.gameObject.SetActive(false);
             DealBtn.gameObject.SetActive(true);
@@ -204,7 +206,7 @@ public class BlackjackManager : MonoBehaviour
     void ChangeBetClicked()
     {
         Player.transform.localScale = new Vector3(4, 4, 4);
-        playerMotor.Teleport(new Vector3(54.3f, 0, 22.77f), Quaternion.Euler(0f, -90f, 0f));
+        playerMotor.Teleport(new Vector3(53.01f, -0.3f, -5.15f), Quaternion.Euler(0f, -90f, 0f));
         mainCameraManager.Teleport(new Vector3(48.23747f, 4.47087f, 22.77152f), Quaternion.Euler(6.875f, 90.4f, 0.105f));
         BlackJackCanvas.SetActive(false);
         BodyBettingCanvas.SetActive(true);
@@ -212,16 +214,27 @@ public class BlackjackManager : MonoBehaviour
 
     private void DisplayExtraBetButtons()
     {
-        int money = playerScript.GetMoney();
-        Boolean addhundred = money >= 100 && bodyBettingManager.betAmount+100 <= money;
-        Boolean addten = money >= 10 && bodyBettingManager.betAmount + 10 <= money;
-        Boolean minushundred = money >= 100 && bodyBettingManager.betAmount - 100 >= 0;
-        Boolean minusten = money >= 10 && bodyBettingManager.betAmount - 10 >= 0;
+        if (gameInProgress)
+        {
+            Add100Btn.gameObject.SetActive(false);
+            Add10Btn.gameObject.SetActive(false);
+            Minus100Btn.gameObject.SetActive(false);
+            Minus10Btn.gameObject.SetActive(false);
+        }
+        else
+        {
+            int money = playerScript.GetMoney();
+            Boolean addhundred = money >= 100 && bodyBettingManager.betAmount + 100 <= money;
+            Boolean addten = money >= 10 && bodyBettingManager.betAmount + 10 <= money;
+            Boolean minushundred = money >= 100 && bodyBettingManager.betAmount - 100 >= 0;
+            Boolean minusten = money >= 10 && bodyBettingManager.betAmount - 10 >= 0;
 
-        Add100Btn.gameObject.SetActive(addhundred);
-        Add10Btn.gameObject.SetActive(addten);
-        Minus100Btn.gameObject.SetActive(minushundred);
-        Minus10Btn.gameObject.SetActive(minusten);
+            Add100Btn.gameObject.SetActive(addhundred);
+            Add10Btn.gameObject.SetActive(addten);
+            Minus100Btn.gameObject.SetActive(minushundred);
+            Minus10Btn.gameObject.SetActive(minusten);
+        }
+       
 
         betsText.text = "Bet: $" + bodyBettingManager.betAmount.ToString();
     }

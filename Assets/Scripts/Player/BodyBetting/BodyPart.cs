@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
 
 // BodyPart.cs
 public class BodyPart : MonoBehaviour
