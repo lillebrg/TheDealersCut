@@ -77,7 +77,7 @@ public class BodyBettingManager : MonoBehaviour
         {
             bet += part.price;
         }
-        this.betAmount = bet;
+        betAmount = bet;
 
         betText.text = $"Bet: ${betAmount}";
         blackjackBetText.text = $"Bet: ${betAmount}";
