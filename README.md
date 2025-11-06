@@ -9,8 +9,10 @@ Rytmebaseret platformspil bygget i Unity.
 4. Play ▶️
 
 ## Kontroller
+- WASD: gå
+- Mus: kig
+- E: Interact
 - Space / Tap: Hop
-- Dobbelt Space / Hold: Dash
 
 ## Mappeinfo
 - `Assets/` kildedata (scripts, prefabs, scenes) + `.meta` filer
